@@ -14,7 +14,7 @@ FPREC  =
 endif
 
 FP_FLAGS=-fdefault-real-8 -fdefault-double-8
-FCFLAGS = $(EXTRA) $(FPREC) -fPIC -g -cpp -flto -Wall -Wno-unused-dummy-argument #-march=native -Ofast -funroll-loops
+FCFLAGS = $(EXTRA) $(FPREC) -fPIC -g -cpp -flto -Wall -Wno-unused-dummy-argument -march=native -Ofast -funroll-loops
 PARALLEL= -fopenmp
 NVFLAGS = $(EXTRA) $(NVPREC) -I$(LIBMAGMADIR)/include -DMAGMA_ILP64 -Xcompiler -fPIC -arch=sm_35 -use_fast_math -O3 -Xptxas --opt-level=3 -Xptxas --allow-expensive-optimizations=true 
 FLFLAGS = $(OPENBLASDIR)/libopenblas.a -fopenmp -L$(OPENBLASDIR)
