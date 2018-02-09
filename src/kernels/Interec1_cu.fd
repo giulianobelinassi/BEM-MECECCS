@@ -1,0 +1,17 @@
+
+        INTERFACE
+          SUBROUTINE CUDA_INTEREC1 (n,nbe,npg,l,np,cxi,cyi,czi,
+     $      zge,zcs,zcp,c1,c2,c3,c4,fr,zdfi,zfi,zdsol,stats)
+          
+            IMPLICIT NONE
+
+            INTEGER, INTENT(IN) :: nbe,npg,n,np,l
+            REAL, DIMENSION(L), INTENT(IN) :: cxi, cyi, czi
+            COMPLEX, INTENT(IN) :: zge, zcs, zcp
+            REAL, INTENT(IN) :: c1,c2,c3,c4,fr
+            COMPLEX, DIMENSION(3*NBE), INTENT(OUT) :: ZFI, ZDFI
+            COMPLEX, DIMENSION(3*L), INTENT(OUT) :: zdsol 
+            INTEGER, INTENT(OUT) :: stats
+          END
+        END INTERFACE
+

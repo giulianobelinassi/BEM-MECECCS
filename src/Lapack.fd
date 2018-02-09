@@ -1,0 +1,35 @@
+
+        INTERFACE
+
+          SUBROUTINE ZGEMV(TRANS, M, N, ALPHA, A, LDA, X, INCX, BETA,
+     $                                                       Y, INCY)
+            IMPLICIT NONE
+            CHARACTER*1 TRANS
+            INTEGER(kind=8) ::  M, N, LDA, INCX, INCY
+            COMPLEX(kind=8) ::  ALPHA, BETA
+            COMPLEX(kind=8) :: A(LDA, *), X(*), Y(*)
+          END SUBROUTINE ZGEMV
+
+          SUBROUTINE CGEMV(TRANS, M, N, ALPHA, A, LDA, X, INCX, BETA,
+     $                                                       Y, INCY)
+            IMPLICIT NONE
+            CHARACTER*1 TRANS
+            INTEGER(kind=8) ::  M, N, LDA, INCX, INCY
+            COMPLEX(kind=4) :: ALPHA, BETA
+            COMPLEX(kind=4) :: A(LDA, *), X(*), Y(*)
+          END SUBROUTINE CGEMV
+
+          SUBROUTINE ZGESV(N, NRHS, A, LDA, IPIV, B, LDB, INFO)
+      		INTEGER(kind=8) :: INFO, LDA, LDB, N, NRHS
+      		INTEGER(kind=8) :: IPIV( * )
+      		COMPLEX(kind=8) :: A( LDA, * ), B( LDB, * )
+          END SUBROUTINE ZGESV
+
+          SUBROUTINE CGESV(N, NRHS, A, LDA, IPIV, B, LDB, INFO)
+      		INTEGER(kind=8) :: INFO, LDA, LDB, N, NRHS
+      		INTEGER(kind=8) :: IPIV( * )
+      		COMPLEX(kind=4) :: A( LDA, * ), B( LDB, * )
+          END SUBROUTINE CGESV
+
+        END INTERFACE
+

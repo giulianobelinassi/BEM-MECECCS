@@ -1,0 +1,19 @@
+
+        INTERFACE
+          SUBROUTINE GHMATECE(CX,CY,CZ,CXM,CYM,CZM,HESTdiag,GESTdiag
+     $             ,NE,NX,NCOX,
+     $        CONE,N,NBE,NP,NPG,GE,RNU,RMU,DELTA,PI,C1,C2,C3,C4,ETAS,GI,
+     $        OME)
+            IMPLICIT REAL (A-H,O-Y)
+            IMPLICIT COMPLEX (Z)
+            COMMON INP,INQ,IPR,IPS,IPT
+            REAL, DIMENSION(NP), INTENT(IN) :: CX, CY, CZ
+            REAL, DIMENSION(N) , INTENT(IN) :: CXM, CYM, CZM
+            
+            REAL, DIMENSION(:,:,:), ALLOCATABLE, INTENT(OUT) ::HESTdiag
+            REAL, DIMENSION(:,:,:), ALLOCATABLE, INTENT(OUT) ::GESTdiag
+            INTEGER, DIMENSION(N, 4), INTENT(IN) :: CONE
+            REAL :: DELTA(3,3), ETAS(3, n)
+            REAL, DIMENSION(NPG), INTENT(IN) :: GI, OME
+          END
+        END INTERFACE

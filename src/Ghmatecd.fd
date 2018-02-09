@@ -1,0 +1,25 @@
+        INTERFACE
+          SUBROUTINE GHMATECD (CX,CY,CZ,CXM,CYM,CZM,HESTdiag,GESTdiag,
+     $             ZH,
+     $      KODE,NE,NX,NCOX,CONE,DELTA,PI,N,NBE,NP,NPG,GE,RNU,RMU,
+     $      ZDFI,ZFI,L,FR,DAM,RHO,ZGE,ZCS,ZCP,C1,C2,C3,C4,ETAS,GI,OME)
+          
+            IMPLICIT NONE
+            REAL, DIMENSION(NP), INTENT(IN) :: CX, CY, CZ
+            REAL, DIMENSION(N), INTENT(IN) :: CXM, CYM, CZM
+            REAL, DIMENSION(3,3,NBE), INTENT(IN) :: HESTdiag, GESTdiag
+
+            COMPLEX, DIMENSION(:,:), ALLOCATABLE, INTENT(OUT) :: ZH
+            INTEGER, INTENT(IN) :: KODE(3*NBE),NE,NX,NCOX,CONE(N,4)
+            REAL, INTENT(IN) :: DELTA(3,3),PI
+            INTEGER, INTENT(IN) :: N,NBE,NP,NPG, L
+            REAL, INTENT(IN) :: GE,RNU,RMU,FR,DAM,RHO
+            COMPLEX,   INTENT(IN) :: ZGE,ZCS,ZCP
+            REAL, INTENT(IN) :: C1,C2,C3,C4
+            REAL, INTENT(IN) :: ETAS(3,N)
+            REAL, DIMENSION(NPG), INTENT(IN) :: GI, OME
+            COMPLEX, INTENT(IN) :: ZDFI(3*NBE)
+            COMPLEX, INTENT(OUT), ALLOCATABLE :: ZFI(:)
+          END
+        END INTERFACE
+

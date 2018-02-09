@@ -1,0 +1,7 @@
+*.o
+*.swp
+*.swo
+*.mod
+*.dat
+*.DAT
+fort.*

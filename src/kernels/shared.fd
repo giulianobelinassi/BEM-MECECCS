@@ -1,0 +1,19 @@
+
+        INTERFACE
+          SUBROUTINE SEND_SHARED_DATA_TO_GPU (cx,cy,cz,cxm,cym,czm,etas,
+     $      gi,ome,cone,np,npg,n,nbe)
+          
+            IMPLICIT NONE
+
+            INTEGER, INTENT(IN) :: nbe,npg,n,np
+            REAL, DIMENSION(np), INTENT(IN) :: cx, cy, cz
+            REAL, DIMENSION(n),  INTENT(IN) :: cxm, cym, czm
+            REAL, DIMENSION(3,n), INTENT(IN) :: etas
+            REAL, DIMENSION(npg), INTENT(IN) :: gi, ome
+            INTEGER, DIMENSION(n,4), INTENT(IN) :: cone
+          END
+
+          SUBROUTINE DEALLOCATE_SHARED_GPU_DATA()
+            IMPLICIT NONE
+          END
+        END INTERFACE

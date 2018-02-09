@@ -1,0 +1,10 @@
+        
+        INTERFACE
+          FUNCTION NORMVEC(cone, cx, cy, cz, n, np) RESULT(ETAS)
+            IMPLICIT NONE
+            INTEGER, DIMENSION(n,4), INTENT(IN) :: CONE
+            REAL, DIMENSION(np), INTENT(IN) :: CX, CY, CZ
+            INTEGER, INTENT(IN) :: n, np
+            REAL, DIMENSION(:,:), ALLOCATABLE:: ETAS
+          END
+        END INTERFACE 

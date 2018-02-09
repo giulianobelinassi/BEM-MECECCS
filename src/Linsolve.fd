@@ -1,0 +1,9 @@
+
+        INTERFACE
+          SUBROUTINE LINSOLVE(NN, N, ZH, ZFI)
+            IMPLICIT NONE
+            INTEGER, INTENT(IN) :: NN, N
+            COMPLEX, INTENT(INOUT) :: ZH(NN, NN)
+            COMPLEX, INTENT(INOUT) :: ZFI(NN)
+          END 
+        END INTERFACE

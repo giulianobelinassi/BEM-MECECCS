@@ -1,0 +1,15 @@
+    
+        INTERFACE
+          SUBROUTINE CUDA_GHMATECE (nbe,npg,n,np,c3,c4,fr,
+     $      hestdiag, status)
+          
+            IMPLICIT NONE
+
+            INTEGER, INTENT(IN) :: nbe,npg,n,np
+            REAL, DIMENSION(3,3,NBE), INTENT(IN) :: hestdiag
+
+            REAL, INTENT(IN) :: c3,c4,fr
+            INTEGER, INTENT(OUT) :: status
+          END
+        END INTERFACE
+
