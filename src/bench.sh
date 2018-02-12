@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MESH_SIZE=(510 632 1600 6840)
+MESH_SIZE=(510 1820)
 COMPILER_PARAMS=(\  gpu)
 MODE_STR=(cpu gpu)
 
@@ -10,6 +10,9 @@ NUM_EXECUTIONS=3
 NUM_MODES=${#COMPILER_PARAMS[@]}
 NUM_MESHES=${#MESH_SIZE[@]}
 
+mkdir -p results
+rm -f results/*.*
+
 for ((i=0; i<${NUM_MODES}; i++)); do
 	compiler_param=${COMPILER_PARAMS[$i]}
 	mode_str=${MODE_STR[$i]}
@@ -18,11 +21,10 @@ for ((i=0; i<${NUM_MODES}; i++)); do
 	make clean
 	FPREC=double make ${compiler_param}
 
-	for thread in {4,4}; do
+	for thread in {1,4}; do
 		export OMP_NUM_THREADS=${thread}
 
-		for ((k=0;k<${MESH_SIZE};k++)); do
-			echo $k
+		for ((k=0;k<${NUM_MESHES};k++)); do
 			mesh=${MESH_SIZE[$k]}
 			file_sta=E${mesh}e.dat
 			file_dyn=E${mesh}d.dat
@@ -38,7 +40,7 @@ for ((i=0; i<${NUM_MODES}; i++)); do
 			for ((l=1;l<=NUM_EXECUTIONS;l++)); do
 				echo "Execução número $l"
 				output_file="results/results_${mode_str}_${mesh}_${thread}_${l}.txt"
-				./main $file_sta $file_dyn $sol_sta $sol_dyn $extra_flag > ${output_file}
+				./main $file_sta $file_dyn $sol_sta $sol_dyn ${extra_flag} >> ${output_file}
 			done
 		done
 	done
