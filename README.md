@@ -1,4 +1,4 @@
- implementation of Boundary Elements Method implementation for Stationary Elastodynamic Problems with GPU Acceleration
+# A implementation of Boundary Elements Method implementation for Stationary Elastodynamic Problems with GPU Acceleration
 
   Code implemented for a journal paper
 
