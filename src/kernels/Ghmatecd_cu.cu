@@ -60,7 +60,7 @@ __global__ void ghmatecd_kernel(
 	
 	int i, j;
 	
-	const FREAL pi  = 3.141592654;
+	const FREAL pi  = 3.1415926535897932;
 	FREAL p[4][2], f[4];
 	FREAL xj[3][2];
 	__shared__ FREAL co[3][4];
