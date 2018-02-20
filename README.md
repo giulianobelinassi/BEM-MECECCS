@@ -15,8 +15,6 @@ INTERFACE64=1 USE_OPENMP=1 make -j <num_of_processors>
 ```
 This will enable 64-bits indexing for very large matrices and OpenMP accelerated BLAS functions.
 
-Then edit the project's `Makefile` and set the variable `OPENBLASDIR` with the OpenBLAS path
-
 #### 2. MAGMA
 
 Having OpenBLAS compiled, download [MAGMA](http://icl.cs.utk.edu/magma/) and unzip it. Although MAGMA supports a large set of BLAS implementations, we only tested our program with OpenBLAS.
