@@ -2,6 +2,7 @@
 from statistics import *
 import re
 import os
+from math import sqrt
 
 Rcode = """
 Graph <- ggplot(DF, aes(x = Size, y = Mean, color = Version, group = Version)) + 
@@ -11,7 +12,7 @@ Graph <- ggplot(DF, aes(x = Size, y = Mean, color = Version, group = Version)) +
   scale_y_log10(breaks = scales::trans_breaks("log10", function(x) 10^x),
               labels = scales::trans_format("log10", scales::math_format(10^.x))) + 
   annotation_logticks(sides = "l")  +
-  geom_errorbar(aes(ymax = Mean + 1.96*DP/sqrt(30), ymin = Mean - 1.96*DP/sqrt(30)), width=0.4) +
+  geom_errorbar(aes(ymax = Mean + DP, ymin = Mean - DP), width=0.4) +
   ylab("Mean (seconds)") + 
   xlab(expression(paste("Mesh size"))) +
   theme(plot.title = element_text(family = "Times", face="bold", size=12)) +
@@ -30,11 +31,14 @@ ggsave(paste("~/Giuliano-plots.pdf",sep=""), Graph,  height=10, width=15, units=
 """
 
 float_regex = "([-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?)"
-keys  = ("SHARED", "GHMATECE", "RIGID", "GHMATECD", "LINSOLVE", "INTEREC1")
-mesh_numbers = (240, 960, 2160, 4000, 14400)
+file_keys = ["SHARED", "GHMATECE", "GHMATECD", "LINSOLVE", "INTEREC1", "SIGMAEC"]
+mesh_numbers = (510, 1820, 6840) #, 26480)
 modes = ("cpu", "gpu") #, "gpu_sing")
-threads = (1, 8, 24, 48)
+threads = (1, 4, 8)
 executions = 30
+
+keys = file_keys[:]
+keys.append("ALL")
 
 def get_data_from_file(filename):
     result = {}
@@ -42,15 +46,15 @@ def get_data_from_file(filename):
     regexes = (
         "Tempo gasto alocando os vetores compartilhados:\s*" + float_regex,
         "GHMATECE: Tempo na ...:\s*" + float_regex,
-        "GHMATECE: Corpo rigido:\s*" + float_regex,
         "GHMATECD: Tempo na ...:\s*" + float_regex,
         "LINSOLVE: Tempo na ...:\s*" + float_regex,
-        "INTEREC1: Tempo na ...:\s*" + float_regex
+        "INTEREC1: Tempo na ...:\s*" + float_regex,
+        "SIGMAEC: Tempo na ...:\s*"  + float_regex
     )
 
     lines = f.read().split("\n")
     for line in lines:
-        for i in range(len(keys)):
+        for i in range(len(file_keys)):
             key = keys[i]
             regex = regexes[i]
 
@@ -58,6 +62,12 @@ def get_data_from_file(filename):
             if (match):
                 result[key] = float(match.group(1))
                 break
+       
+    acc = 0.0;
+    for key in result:
+       acc += result[key]
+    
+    result["ALL"] = acc
 
     return result
 
@@ -84,36 +94,29 @@ def generate_r_data(values, subroutine_name):
 
     DF1 = "data.frame(rbind("
 
-    header_string = "library(ggplot2)\nsize <- c(240, 960, 2160, 4000, 14400)\n"
+    header_string  = "library(ggplot2)\nsize <- c("
+    
+    for i in range(len(mesh_numbers)):
+        header_string += str(mesh_numbers[i]) + ","
+    header_string = header_string[:-1] + ")\n"
 
     for mode in modes:
-        if (mode == "cpu"):
-            threads=(1, 24, 48)
-        if (mode == "gpu"):
-            threads=[8]
-        if (mode == "gpu_sing"):
-            threads=[1]
-
         for thread in threads:
             string = ""
             for mesh in mesh_numbers:
-                string += str(values[mode][thread][mesh][subroutine_name]["MEAN"]) + ","
-       
+                acc = values[mode][thread][mesh][subroutine_name]["MEAN"]
+                string += str(acc) + ","
+
             string = string[:-2]
             final_string = r_format1.format(mode + str(thread), mode + str(thread)) + string + r_format2
             header_string += final_string + "\n"
 
     string = ""
     for mode in modes:
-        if (mode == "cpu"):
-            threads=(1, 24, 48)
-        if (mode == "gpu"):
-            threads=[8]
-        if (mode == "gpu_sing"):
-            threads=[1]
         for thread in threads:
             for mesh in mesh_numbers:
-                string += str(values[mode][thread][mesh][subroutine_name]["STDEV"]) + ","
+                acc = values[mode][thread][mesh][subroutine_name]["STDEV"]
+                string += str(acc) + ","
        
     string = string[:-1]
     final_string = "DP <- c(" + string + ")"
@@ -121,19 +124,18 @@ def generate_r_data(values, subroutine_name):
 
     string = ""
     for mode in modes:
-        if (mode == "cpu"):
-            threads=(1, 24, 48)
-        if (mode == "gpu"):
-            threads=[8]
-        if (mode == "gpu_sing"):
-            threads=[1]
         for thread in threads:
             string += mode + str(thread) + ","
     string = string[:-1]
     final_string = "DF <- data.frame(rbind(" + string + "))"
     header_string += final_string + "\n"
     header_string += 'names(DF) <- c("Size", "Version", "Mean")' + "\n"
-    header_string += 'DF$Size <- factor(DF$Size, levels = c("240", "960", "2160", "4000", "14400"))' + "\n"
+    header_string += 'DF$Size <- factor(DF$Size, levels = c('
+    
+    for mesh in mesh_numbers:
+        header_string += '"' + str(mesh) + '",'
+    header_string = header_string[:-1]
+    header_string += '))\n'
     header_string += 'DF$Mean <- as.numeric(as.character(DF$Mean))' + "\n"
     header_string += 'DP <- as.numeric(as.character(DP))' + "\n"
     return header_string
@@ -144,24 +146,30 @@ def main():
         statistical_values[mode] = {}
         for thread in threads:
             statistical_values[mode][thread] = {}
+            
+            if (thread == 1):
+                num_execs = 1
+            else:
+                num_execs = executions
+            
             for mesh in mesh_numbers:
                 statistical_values[mode][thread][mesh] = {}
-                t = get_all_data(mode, mesh, thread, executions)
+                t = get_all_data(mode, mesh, thread, num_execs)
                 for key in t:
                     if (len(t[key]) == 0):
                         continue
                     m  = mean(t[key])
-                    sd = stdev(t[key])
-                   
-                    if (mode != "cpu" and (key == "GHMATECD" or key == "GHMATECE")):
-                        m = m + mean(t["SHARED"])
 
+                    if (num_execs != 1):
+                        sd = stdev(t[key])
+                    else:
+                        sd = 0.01
+                   
                     statistical_values[mode][thread][mesh][key] = {}
                     statistical_values[mode][thread][mesh][key]["MEAN"] = m
-                    statistical_values[mode][thread][mesh][key]["STDEV"] = sd
+                    statistical_values[mode][thread][mesh][key]["STDEV"] = 1.96*sd/sqrt(num_execs)
 
-
-    header = generate_r_data(statistical_values, "GHMATECE")
+    header = generate_r_data(statistical_values, "ALL")
     temp_file = open("temp.r", "w")
     temp_file.write(header + Rcode)
     temp_file.close()
