@@ -1,10 +1,10 @@
-# A implementation of Boundary Elements Method implementation for Stationary Elastodynamic Problems with GPU Acceleration
+# A Boundary Elements Method implementation for Stationary Elastodynamic Problems with GPU Acceleration
 
   Code implemented for a journal paper
 
 ### Dependencies
 
-This project have mainly two dependencies: [OpenBLAS](http://www.openblas.net/) and [MAGMA](http://icl.cs.utk.edu/magma/). If you do not want to use GPU acceleration, then you only need OpenBLAS. Else both libraries are required.
+This project have mainly three dependencies: [OpenBLAS](http://www.openblas.net/), [CUDA](https://developer.nvidia.com/cuda-downloads) and [MAGMA](http://icl.cs.utk.edu/magma/). If you do not want to use GPU acceleration, then you only need OpenBLAS. Else all libraries are required.
 
 #### 1. OpenBLAS
 
@@ -40,7 +40,10 @@ NVCCFLAGS = -O3 -DMAGMA_ILP64        -DNDEBUG -DADD_       -Xcompiler "$(FPIC)"
 LDFLAGS   =     $(FPIC)                       -fopenmp
 ```
 
-Also set the variable `OPENBLASDIR` with the path to the extracted and compiled OpenBLAS; and set `CUDADIR` to where you installed the CUDA library files. Adding `-DMAGMA_ILP64` enables 64-bit indexing for very large matrices. 
+Also set the variable `OPENBLASDIR` with the path to the extracted and compiled OpenBLAS; and set `CUDADIR` to where you installed the CUDA library files. Adding `-DMAGMA_ILP64` enables 64-bit indexing for very large matrices. Then compile it with 
+```
+make dense
+```
 
 ### Compiling the project
 
