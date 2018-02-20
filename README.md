@@ -47,7 +47,7 @@ make dense
 
 ### Compiling the project
 
-Currently we support both CPU-only and GPU-accelerated modes. The project only supports Linux AMD64 with __gcc >= 4.8__ and __gfortran >= 4.8__.
+Currently we support both CPU-only and GPU-accelerated modes. The project only supports Linux AMD64 with __gcc >= 4.8__, __nvcc >= 8.0__ and __gfortran >= 4.8__.
 
 #### 1. CPU-Only
 For CPU-only, compile the OpenBLAS library as described above, update the variable `OPENBLASDIR` inside `Makefile` with the path to the compiled OpenBLAS folder, and compile the project with the command: `FRPEC=double make`. You can also compile with `FRPEC=float make` for single precision.
