@@ -34,7 +34,9 @@ float_regex = "([-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?)"
 file_keys = ["SHARED", "GHMATECE", "GHMATECD", "LINSOLVE", "INTEREC1", "SIGMAEC"]
 mesh_numbers = (510, 1820, 6840) #, 26480)
 modes = ("cpu", "gpu") #, "gpu_sing")
-threads = (1, 4, 8)
+all_threads = (1, 4, 8)
+threads = {"cpu": all_threads, "gpu": [4, 8]}
+
 executions = 30
 
 keys = file_keys[:]
@@ -101,7 +103,7 @@ def generate_r_data(values, subroutine_name):
     header_string = header_string[:-1] + ")\n"
 
     for mode in modes:
-        for thread in threads:
+        for thread in threads[mode]:
             string = ""
             for mesh in mesh_numbers:
                 acc = values[mode][thread][mesh][subroutine_name]["MEAN"]
@@ -113,7 +115,7 @@ def generate_r_data(values, subroutine_name):
 
     string = ""
     for mode in modes:
-        for thread in threads:
+        for thread in threads[mode]:
             for mesh in mesh_numbers:
                 acc = values[mode][thread][mesh][subroutine_name]["STDEV"]
                 string += str(acc) + ","
@@ -124,7 +126,7 @@ def generate_r_data(values, subroutine_name):
 
     string = ""
     for mode in modes:
-        for thread in threads:
+       for thread in threads[mode]:
             string += mode + str(thread) + ","
     string = string[:-1]
     final_string = "DF <- data.frame(rbind(" + string + "))"
@@ -144,11 +146,11 @@ def main():
     statistical_values = {}
     for mode in modes:
         statistical_values[mode] = {}
-        for thread in threads:
+        for thread in all_threads:
             statistical_values[mode][thread] = {}
             
             if (thread == 1):
-                num_execs = 1
+                num_execs = 5
             else:
                 num_execs = executions
             
@@ -160,10 +162,10 @@ def main():
                         continue
                     m  = mean(t[key])
 
-                    if (num_execs != 1):
-                        sd = stdev(t[key])
-                    else:
-                        sd = 0.01
+#                    if (num_execs != 1):
+                    sd = stdev(t[key])
+#                    else:
+#                        sd = 0.01
                    
                     statistical_values[mode][thread][mesh][key] = {}
                     statistical_values[mode][thread][mesh][key]["MEAN"] = m
