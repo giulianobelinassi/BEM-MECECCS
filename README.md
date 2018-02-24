@@ -2,6 +2,15 @@
 
   Code implemented for a journal paper
 
+## Quick Install:
+Run the script
+```
+./deploy.sh
+```
+
+This will download and compile OpenBLAS and MAGMA. No sudo is required.
+Inside the `src` directory, there is a script named `bench.sh` that reproduces the tests. The script `analyser.py` plot the time graphics.
+
 ### Dependencies
 
 This project have mainly three dependencies: [OpenBLAS](http://www.openblas.net/), [CUDA](https://developer.nvidia.com/cuda-downloads) and [MAGMA](http://icl.cs.utk.edu/magma/). If you do not want to use GPU acceleration, then you only need OpenBLAS. Else all libraries are required.

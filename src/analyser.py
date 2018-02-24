@@ -27,7 +27,7 @@ Graph <- ggplot(DF, aes(x = Size, y = Mean, color = Version, group = Version)) +
         legend.key=element_rect(size=0),
         legend.key.size = unit(1, "lines")) +
   guides(col = guide_legend(nrow = 1))
-ggsave(paste("~/Giuliano-plots.pdf",sep=""), Graph,  height=10, width=15, units="cm")
+ggsave(paste("plots.pdf",sep=""), Graph,  height=10, width=15, units="cm")
 """
 
 float_regex = "([-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?)"
@@ -176,6 +176,7 @@ def main():
     temp_file.write(header + Rcode)
     temp_file.close()
 
+    print("Result will be printed into plots.pdf")
     os.system("Rscript temp.r")
 
 if __name__ == "__main__":
