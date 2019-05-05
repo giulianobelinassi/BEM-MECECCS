@@ -80,5 +80,4 @@ Run the script
 ```
 The tests requires the GPU-accelerated mode. 
 ### White paper
-To be added later, maybe?
-
+The paper is available on [ScienceDirect here](https://www.sciencedirect.com/science/article/abs/pii/S0955799718301395).
